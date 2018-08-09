@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:security="http://www.springframework.org/schema/security"
+       xmlns:property="http://www.springframework.org/schema/security"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security.xsd">
+
+<security:http pattern="/user/login" security="none"></security:http>
+<security:http pattern="/user/register" security="none"></security:http>
+<security:http pattern="/user/doRegister" security="none"></security:http>
+
+
+    <security:http auto-config="true" use-expressions="false">
+          <property:intercept-url  pattern="/**" access="ROLE_USER" ></property:intercept-url>
+
+        <security:form-login
+                login-page="/user/login"
+                login-processing-url="/login"
+                username-parameter="username"
+                password-parameter="password"
+            default-target-url="/user/success"></security:form-login>
+
+        <security:logout invalidate-session="true"
+                         logout-url="/logout"
+                         logout-success-url="/pages/login.jsp"></security:logout>
+
+        <!--权限校验失败跳转的页面-->
+       <!-- <security:access-denied-handler error-page="/pages/permission.jsp"></security:access-denied-handler>-->
+        <!--关闭跨域请求校验-->
+        <security:csrf disabled="true"></security:csrf>
+
+    </security:http>
+
+   <!-- &lt;!&ndash;(1)jsr-250支持,开启@RolesAllowed注解支持&ndash;&gt;
+    <security:global-method-security jsr250-annotations="enabled"></security:global-method-security>
+-->
+
+
+    <security:authentication-manager>
+        <security:authentication-provider user-service-ref="userService"></security:authentication-provider>
+    </security:authentication-manager>
+</beans>
